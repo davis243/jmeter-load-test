@@ -1,0 +1,45 @@
+version: "3"
+services:
+  mongodb:
+    container_name: mongodbhost
+    image: mongo:4.2.9-bionic
+    ports:
+      - 27017:27017
+    deploy:
+      resources:
+        limits:
+          memory: 256MB
+          
+  app-orders:
+    build: 
+      context: .
+      dockerfile: ./orders/Dockerfile
+    image: orders:0.0.1-SNAPSHOT
+    depends_on:
+      - mongodb
+    environment:
+      - SPRING_PROFIlES_ACTIVE=prod
+    ports:
+      - 8080:8080
+      - 4444:4444
+    deploy:
+      resources:
+        limits:
+          memory: 256MB
+          
+  app-orders-reactive:
+    build: 
+      context: .
+      dockerfile: ./orders-reactive/Dockerfile
+    image: orders-reactive:0.0.1-SNAPSHOT
+    depends_on:
+      - mongodb
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - 8090:8080
+      - 4445:4444
+    deploy:
+      resources:
+        limits:
+          memory: 256MB
